@@ -3,9 +3,22 @@
     {
       "id": "rg",
       "label": "Resource Group",
-      "subtitle": "Foundation Container",
+      "subtitle": "rg-changes-testing",
       "icon": "/icons/azure/management/resource-group.png"
+    },
+    {
+      "id": "terraform",
+      "label": "Terraform",
+      "subtitle": "Infrastructure as Code",
+      "icon": "/icons/onprem/iac/terraform.png"
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "terraform-to-rg",
+      "source": "terraform",
+      "target": "rg",
+      "label": "provisions"
+    }
+  ]
 }
