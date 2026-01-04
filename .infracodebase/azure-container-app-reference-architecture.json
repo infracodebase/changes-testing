@@ -1,0 +1,186 @@
+{
+  "nodes": [
+    {
+      "id": "vnet",
+      "label": "Virtual Network",
+      "subtitle": "container-app-vnet",
+      "icon": "/icons/azure/networking/virtual-network.png",
+      "type": "container"
+    },
+    {
+      "id": "app-subnet",
+      "label": "Container App Subnet",
+      "subtitle": "snet-container-apps",
+      "icon": "/icons/azure/networking/subnet.png",
+      "type": "container",
+      "parentNode": "vnet",
+      "order": 1
+    },
+    {
+      "id": "container-env",
+      "label": "Container App Environment",
+      "subtitle": "cae-production",
+      "icon": "/icons/azure/application/container-app-environment.png",
+      "type": "container",
+      "parentNode": "app-subnet"
+    },
+    {
+      "id": "frontend-app",
+      "label": "Frontend Container App",
+      "subtitle": "ca-frontend",
+      "icon": "/icons/azure/application/container-app.png",
+      "parentNode": "container-env",
+      "order": 1
+    },
+    {
+      "id": "api-app",
+      "label": "API Container App",
+      "subtitle": "ca-api",
+      "icon": "/icons/azure/application/container-app.png",
+      "parentNode": "container-env",
+      "order": 2
+    },
+    {
+      "id": "worker-app",
+      "label": "Worker Container App",
+      "subtitle": "ca-worker",
+      "icon": "/icons/azure/application/container-app.png",
+      "parentNode": "container-env",
+      "order": 3
+    },
+    {
+      "id": "app-gateway",
+      "label": "Application Gateway",
+      "subtitle": "agw-frontend",
+      "icon": "/icons/azure/networking/application-gateway.png",
+      "position": {
+        "relativeTo": "vnet",
+        "side": "above",
+        "alignWith": "frontend-app"
+      }
+    },
+    {
+      "id": "log-analytics",
+      "label": "Log Analytics Workspace",
+      "subtitle": "law-monitoring",
+      "icon": "/icons/azure/management/log-analytics-solution.png",
+      "position": {
+        "relativeTo": "vnet",
+        "side": "right"
+      }
+    },
+    {
+      "id": "app-insights",
+      "label": "Application Insights",
+      "subtitle": "ai-telemetry",
+      "icon": "/icons/azure/management/application-insights.png",
+      "position": {
+        "relativeTo": "log-analytics",
+        "side": "below"
+      }
+    },
+    {
+      "id": "container-registry",
+      "label": "Container Registry",
+      "subtitle": "acrproduction",
+      "icon": "/icons/azure/compute/container-registry.png",
+      "position": {
+        "relativeTo": "vnet",
+        "side": "left"
+      }
+    },
+    {
+      "id": "key-vault",
+      "label": "Key Vault",
+      "subtitle": "kv-secrets",
+      "icon": "/icons/azure/security/key-vault.png",
+      "position": {
+        "relativeTo": "container-registry",
+        "side": "below"
+      }
+    },
+    {
+      "id": "cosmos-db",
+      "label": "Cosmos DB",
+      "subtitle": "cosmos-production",
+      "icon": "/icons/azure/data/azure-cosmos-db.png",
+      "position": {
+        "relativeTo": "worker-app",
+        "side": "below",
+        "alignWith": "worker-app"
+      }
+    },
+    {
+      "id": "service-bus",
+      "label": "Service Bus",
+      "subtitle": "sb-messaging",
+      "icon": "/icons/azure/data/service-bus.png",
+      "position": {
+        "relativeTo": "cosmos-db",
+        "side": "right"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "app-gateway",
+      "target": "frontend-app",
+      "label": "routes traffic"
+    },
+    {
+      "id": "e2",
+      "source": "frontend-app",
+      "target": "api-app",
+      "label": "calls API"
+    },
+    {
+      "id": "e3",
+      "source": "api-app",
+      "target": "cosmos-db",
+      "label": "reads/writes data"
+    },
+    {
+      "id": "e4",
+      "source": "api-app",
+      "target": "service-bus",
+      "label": "publishes messages"
+    },
+    {
+      "id": "e5",
+      "source": "service-bus",
+      "target": "worker-app",
+      "label": "triggers processing"
+    },
+    {
+      "id": "e6",
+      "source": "worker-app",
+      "target": "cosmos-db",
+      "label": "processes data"
+    },
+    {
+      "id": "e7",
+      "source": "container-env",
+      "target": "log-analytics",
+      "label": "sends logs"
+    },
+    {
+      "id": "e8",
+      "source": "container-env",
+      "target": "app-insights",
+      "label": "sends telemetry"
+    },
+    {
+      "id": "e9",
+      "source": "container-registry",
+      "target": "container-env",
+      "label": "pulls images"
+    },
+    {
+      "id": "e10",
+      "source": "key-vault",
+      "target": "container-env",
+      "label": "provides secrets"
+    }
+  ]
+}
